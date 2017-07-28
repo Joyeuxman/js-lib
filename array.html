@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href=./image/css_favicon.ico>
+    <title>数组</title>
+</head>
+
+<body>
+    <script>
+        // 1.数组去重
+        const arr = ['apple', 'banana', 'watermelon', 'apple', 'banana', 'watermelon'];
+        const arr1 = [];
+        arr.forEach(ele => {
+            if (!arr1.some(item => ele == item)) {
+                arr1.push(ele);
+            }
+        })
+        const arr2 = arr1.join(',');
+        console.log(`去重后的数组${arr1}`);//这种形式的打印会改变打印内容即arr1的类型
+        console.log('去重后的数组===', arr1);//这种形式的打印不改变打印内容即arr1的类型
+        console.log('去重后的数组字符串', arr2);
+        // console.log('使用const来命名变量，VSCode会莫名报错');
+
+
+
+        // 2.删除数组中的特定元素
+        const arr3 = ['apple', 'banana', 'watermelon', 'apple', 'banana', 'watermelon'];
+        /**
+        *@param arr 需要进行删除处理的数组
+        *@param delItem 数组中需要删除的元素
+        *@flag 删除方式 true为删除数组中与delItem完全相等的元素 false为删除数组中包含delItem的元素
+        */
+        const delArrEle = (arr, delItem, flag) => {
+            return arr.filter(ele => {
+                return flag ? ele.indexOf(delItem) == -1 : ele !== delItem;
+            })
+        }
+        const arr4 = delArrEle(arr3, 'apple', true);
+        console.log('删除apple后的数组', arr4);
+    </script>
+</body>
+
+</html>

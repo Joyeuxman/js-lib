@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href=./image/css_favicon.ico>
+    <title>日期</title>
+</head>
+
+<body>
+    <script>
+        // 1.标准时间转字符串时间
+        const dateToString = (d) => {
+            return [
+                d.getFullYear(),
+                d.getMonth() + 1,
+                d.getDate()
+            ].join('-');
+        }
+        const stringDate = dateToString(new Date());
+        console.log('标准时间转字符串时间',stringDate);
+    </script>
+</body>
+
+</html>
