@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>分包供应商统计</title>
+		<style type="text/css">
+			#spchart1-content {
+
+				height: 100%;
+				width: 50%;
+				min-width: 300px;
+				min-height: 400px;
+			}
+			
+			#spchart1-container {
+				background-color: white;
+				border-radius: 5px;
+			}
+			
+			#spchart2-content {
+
+				height: 100%;
+				width: 50%;
+				min-width: 300px;
+				min-height: 400px;
+			}
+			
+			#spchart2-container {
+				background-color: white;
+				border-radius: 5px;
+			}
+			
+			#spchart3-content {
+				height: 100%;
+				width: 100%;
+				min-width: 300px;
+				min-height: 400px;
+			}
+			
+			#spchart3-container {
+				background-color: white;
+				border-radius: 5px;
+			}
+		</style>
+		<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.js"></script>
+		<script type="text/javascript">
+			$.ajaxSetup({
+				headers: {
+					'Authorization': "Basic QURNSU46S1lMSU4=",
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+				// use your own authorization code here
+			});
+		</script>
+	</head>
+
+	<body>
+
+		<div>
+			<div style="display: flex;flex-wrap:wrap;">
+				<div style="flex:1;width: 100%;" id="spchart1-container">
+					<div style="margin-left: auto;margin-right: auto;" id="spchart1-content"></div>
+				</div>
+				<div style="flex:1;width: 100%;" id="spchart2-container">
+					<div style="margin-left: auto;margin-right: auto;" id="spchart2-content"></div>
+				</div>
+			</div>
+			<div style="width: 100%;" id="spchart3-container">
+				<div id="spchart3-content"></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var sql3 = '';
+			sql3 = 'SELECT T1.SUBCONTRACTORS ,sum(T1.Z3BENQIFASHENG) as sum1 FROM LEDAO.T_OA_FLOWFORMSETTLEMENTLABORSCHEDULEPARAGRAPHAPPLYMAIN as T1 LEFT JOIN LEDAO.T_PM_SUBCONTRACT as T_PM_SUBCONTRACT ON T1.SUBCONTRACTID = T_PM_SUBCONTRACT.ID LEFT JOIN LEDAO.T_PM_PROJECT as T_PM_PROJECT ON T1.PRJID = T_PM_PROJECT.ID LEFT JOIN LEDAO.T_HR_ORG as T_HR_ORG ON T_PM_PROJECT.FILIALEID = T_HR_ORG.ID where T_PM_SUBCONTRACT.TYPE=\'1\' group by T1.SUBCONTRACTORS order by sum(T1.Z3BENQIFASHENG) desc limit 10';
+			var request = $.ajax({
+				url: "http://10.11.248.8:7070/kylin/api/query",
+				type: "POST",
+				data: '{"sql":"' + sql3 + ';","acceptPartial":true,"project":"ledao"}',
+				dataType: "json"
+			});
+			request.done(function(msg) {
+				var arry2 = [];
+				var legendArr = [];
+				$.each(msg.results, function(i, item) {
+					var items = {
+						name: item[0],
+						value: (item[1] / 10000).toFixed(2)
+					};
+					legendArr.push(item[0]);
+					arry2.push(items);
+				});
+				//	option.legend.data = legendArr;
+
+				option_1.series[0].data = arry2;
+				//	option.series[1].data = arry2;
+				myChart_1.setOption(option_1);
+				window.onresize = myChart1.resize;
+			});
+
+			request.fail(function(jqXHR, textStatus) {
+				alert("Request failed: " + textStatus);
+			});
+			// 基于准备好的dom，初始化按月统计图表
+			var myChart_1 = echarts.init(document.getElementById('spchart1-content'));
+			myChart_1.on('click', function(params) {
+				$.ajaxSetup({
+					headers: {
+						'Authorization': "Basic QURNSU46S1lMSU4=",
+						'Content-Type': 'application/json;charset=utf-8'
+					}
+				});
+				var barParams = params.name;
+				//获取所选供应商的月度数据sql2,获取所选供应商按项目分布数据sql21
+				var sql2 = '';
+				var sql21 = '';
+				sql2 = 'SELECT T1.\\"MONTH\\",sum(T1.Z3BENQIFASHENG) as sum1 ';
+				sql21 = 'SELECT T_PM_PROJECT.\\"NAME\\",sum(T1.Z3BENQIFASHENG) as sum1 ';
+				sql2 = sql2 + 'FROM LEDAO.T_OA_FLOWFORMSETTLEMENTLABORSCHEDULEPARAGRAPHAPPLYMAIN as T1 LEFT JOIN LEDAO.T_PM_SUBCONTRACT as T_PM_SUBCONTRACT ON T1.SUBCONTRACTID = T_PM_SUBCONTRACT.ID LEFT JOIN LEDAO.T_PM_PROJECT as T_PM_PROJECT ON T1.PRJID = T_PM_PROJECT.ID LEFT JOIN LEDAO.T_HR_ORG as T_HR_ORG ON T_PM_PROJECT.FILIALEID = T_HR_ORG.ID ';
+				sql21 = sql21 + 'FROM LEDAO.T_OA_FLOWFORMSETTLEMENTLABORSCHEDULEPARAGRAPHAPPLYMAIN as T1 LEFT JOIN LEDAO.T_PM_SUBCONTRACT as T_PM_SUBCONTRACT ON T1.SUBCONTRACTID = T_PM_SUBCONTRACT.ID LEFT JOIN LEDAO.T_PM_PROJECT as T_PM_PROJECT ON T1.PRJID = T_PM_PROJECT.ID LEFT JOIN LEDAO.T_HR_ORG as T_HR_ORG ON T_PM_PROJECT.FILIALEID = T_HR_ORG.ID ';
+				sql2 = sql2 + 'where T_PM_SUBCONTRACT.TYPE=\'1\'';
+				sql21 = sql21 + 'where T_PM_SUBCONTRACT.TYPE=\'1\'';
+				//增加时间范围
+				//              sql2 = sql2 +' T1.\\"MONTH\\" >=\'2016年06\'';
+				sql2 = sql2 + ' and T1.SUBCONTRACTORS= \'';
+				sql21 = sql21 + ' and T1.SUBCONTRACTORS= \'';
+				//				倒序排，倒序取 
+				sql2 = sql2 + barParams + '\' group by T1.\\"MONTH\\" order by T1.\\"MONTH\\" desc limit 12 ';
+				sql21 = sql21 + barParams + '\' group by T_PM_PROJECT.\\"NAME\\" order by sum(T1.Z3BENQIFASHENG)  desc limit 12 ';
+				var request1 = $.ajax({
+					url: "http://10.11.248.8:7070/kylin/api/query",
+					type: "POST",
+					data: '{"sql":"' + sql2 + ';","acceptPartial":true,"project":"ledao"}',
+					dataType: "json"
+				});
+				request1.done(function(msg) {
+					var seriesArr = [];
+					var xAxisArr = [];
+					$.each(msg.results, function(i, item) {
+						xAxisArr.push(item[0].substring(2));
+						seriesArr.push((item[1] / 10000).toFixed(2));
+					});
+					option1.title.text = barParams;
+					option1.xAxis.data = xAxisArr;
+					option1.series[0].data = seriesArr;
+					option1.title.subtext = '按月统计结算金额 ';
+					//折行，需要newline js
+					//						option1 = newline(option1, 8, 'xAxis');
+					myChart1.setOption(option1);
+					window.onresize = myChart1.resize;
+				});
+				var request2 = $.ajax({
+					url: "http://10.11.248.8:7070/kylin/api/query",
+					type: "POST",
+					data: '{"sql":"' + sql21 + ';","acceptPartial":true,"project":"ledao"}',
+					dataType: "json"
+				});
+				request2.done(function(msg) {
+
+					var arry2 = [];
+					var legendArr = [];
+					$.each(msg.results, function(i, item) {
+						var items = {
+							name: item[0],
+							value: (item[1] / 10000).toFixed(2)
+						};
+						legendArr.push(item[0]);
+						arry2.push(items);
+					});
+					//	option.legend.data = legendArr;
+
+					option21.series[0].data = arry2;
+					option21.title.subtext = barParams;
+					//	option.series[1].data = arry2;
+
+					myChart.setOption(option21);
+					window.onresize = myChart.resize;
+				});
+			});
+			var option_1 = {
+				title: {
+					text: '十大劳务分包供应商(单位：万元)',
+					subtext: '一公司数据',
+					x: 'center'
+				},
+				tooltip: {
+					trigger: 'item',
+					formatter: "{c} 万元 ({d}%)"
+				},
+				toolbox: {
+					show: true,
+					feature: {
+						mark: {
+							show: true
+						},
+						dataView: {
+							show: true,
+							readOnly: false
+						},
+						magicType: {
+							show: true,
+							type: ['pie', 'funnel']
+						},
+						restore: {
+							show: true
+						},
+						saveAsImage: {
+							show: true
+						}
+					}
+				},
+				calculable: true,
+				series: [{
+					type: 'pie',
+					radius: [30, 110],
+					center: ['50%', '50%'],
+					roseType: 'area',
+					lableLine: {
+						length: 1,
+						length: 1
+					}
+				}]
+			};
+		</script>
+		<script type="text/javascript">
+			// 基于准备好的dom，初始化按月统计图表
+			var myChart = echarts.init(document.getElementById('spchart2-content'));
+			myChart.on('click', function(params) {
+				$.ajaxSetup({
+					headers: {
+						'Authorization': "Basic QURNSU46S1lMSU4=",
+						'Content-Type': 'application/json;charset=utf-8'
+					}
+				});
+				var barParams = params.name;
+				var sql2 = '';
+				sql2 = 'SELECT T1.\\"MONTH\\",sum(T1.Z3BENQIFASHENG) as sum1 FROM LEDAO.T_OA_FLOWFORMSETTLEMENTLABORSCHEDULEPARAGRAPHAPPLYMAIN as T1 LEFT JOIN LEDAO.T_PM_SUBCONTRACT as T_PM_SUBCONTRACT ON T1.SUBCONTRACTID = T_PM_SUBCONTRACT.ID LEFT JOIN LEDAO.T_PM_PROJECT as T_PM_PROJECT ON T1.PRJID = T_PM_PROJECT.ID LEFT JOIN LEDAO.T_HR_ORG as T_HR_ORG ON T_PM_PROJECT.FILIALEID = T_HR_ORG.ID ';
+				sql2 = sql2 + 'where T_PM_SUBCONTRACT.TYPE=\'1\'';
+				sql2 = sql2 + ' and T_PM_PROJECT.\\"NAME\\" =\'' + barParams + '\''
+					//增加时间范围
+					//              sql2 = sql2 +' T1.\\"MONTH\\" >=\'2016年06\'';
+				sql2 = sql2 + ' and T1.SUBCONTRACTORS= \'';
+				//				倒序排，倒序取 
+				sql2 = sql2 + option21.title.subtext + '\' group by T1.\\"MONTH\\" order by T1.\\"MONTH\\"  ';
+				var request1 = $.ajax({
+					url: "http://10.11.248.8:7070/kylin/api/query",
+					type: "POST",
+					data: '{"sql":"' + sql2 + ';","acceptPartial":true,"project":"ledao"}',
+					dataType: "json"
+				});
+				request1.done(function(msg) {
+					var seriesArr = [];
+					var xAxisArr = [];
+					$.each(msg.results, function(i, item) {
+						xAxisArr.push(item[0].substring(2));
+						seriesArr.push((item[1] / 10000).toFixed(2));
+					});
+					option1.title.text = barParams + '--' + option21.title.subtext;
+					option1.xAxis.data = xAxisArr;
+					option1.series[0].data = seriesArr;
+					option1.title.subtext = '按月统计结算金额 ';
+					//折行，需要newline js
+					//						option1 = newline(option1, 8, 'xAxis');
+					myChart1.setOption(option1);
+					window.onresize = myChart1.resize;
+				});
+			});
+			var option21 = {
+				title: {
+					text: '选定分包商各项目结算金额(单位：万元)',
+					x: 'center'
+				},
+				tooltip: {
+					trigger: 'item',
+					formatter: "{c} 万元 ({d}%)"
+				},
+				toolbox: {
+					show: true,
+					feature: {
+						mark: {
+							show: true
+						},
+						dataView: {
+							show: true,
+							readOnly: false
+						},
+						magicType: {
+							show: true,
+							type: ['pie', 'funnel']
+						},
+						restore: {
+							show: true
+						},
+						saveAsImage: {
+							show: true
+						}
+					}
+				},
+				calculable: true,
+				series: [{
+					type: 'pie',
+					radius: [30, 110],
+					center: ['50%', '50%'],
+					roseType: 'area'
+				}]
+			};
+		</script>
+		<script type="text/javascript">
+			// 基于准备好的dom，初始化echarts实例
+			var myChart1 = echarts.init(document.getElementById('spchart3-content'));
+			// 指定图表的配置项和数据
+			var option1 = {
+				title: {
+					x: 'center',
+					text: '按月统计结算金额'
+				},
+
+				toolbox: {
+					right: 40,
+					top: 20,
+					show: true,
+					feature: {
+						mark: {
+							show: true
+						},
+						dataView: {
+							show: true,
+							readOnly: false
+						},
+						magicType: {
+							show: true,
+							type: ['line', 'bar']
+						},
+						restore: {
+							show: true
+						},
+						saveAsImage: {
+							show: true
+						}
+					}
+				},
+				tooltip: {
+					formatter: "{c}"
+				},
+				xAxis: {
+					splitLine: {
+						show: true
+					},
+					//设置字体倾斜  
+					axisLabel: {
+						interval: 0,
+						rotate: 45, //倾斜度 -90 至 90 默认为0  
+						margin: 2,
+						textStyle: {
+							color: "#000000"
+						}
+					}
+				},
+				yAxis: {
+
+				},
+				series: [{
+					center: ['50%', '50%'],
+					itemStyle: {
+						normal: {
+							color: 'rgb(246, 149, 70)'
+						}
+					},
+					label: {
+						normal: {
+							show: true,
+							formatter: '{c}',
+							position: 'top',
+							textStyle: {
+								color: 'rgb(146, 149, 170)'
+
+							}
+
+						}
+					},
+					type: 'bar',
+					//					markPoint: {
+					//				data: [{
+					//					name: '最大值',
+					//					type: 'max',
+					//					itemStyle: {
+					//						normal: {
+					//							color: 'rgba(255,115,105,0.8)',
+					//						},
+					//					},
+					//				}, {
+					//					name: '最小值',
+					//					type: 'min',
+					//					itemStyle: {
+					//						normal: {
+					//							color: 'rgba(255,145,5,0.8)',
+					//						},
+					//					},
+					//				}]
+					//			},
+				}]
+
+			};
+			window.onload = window.parent.dyniframesize;
+		</script>
+	</body>
+
+</html>

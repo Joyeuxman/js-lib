@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>加减乘除四则运算</title>
+</head>
+<a href="http://www.jb51.net/article/85463.htm" target="_blank">参考资料</a>
+<body>
+    <script>
+        // 1.功能：字符串之间的数字运算
+        /*
+        * 整体思路：小数进行四则运算时，会出现精度损失问题，而整数则没有这种问题。
+        * 所以先将小数转化为整数进行四则运算，再将整数转化为小数
+        * @param c,d 字符串数值
+        * @param n 运算类型： 0为+ 1为- 2为乘 3为除
+        */
+        function executeStr(c, d, n) {
+            // 去掉空相
+            var re = /\s/g;
+            var a = c.replace(re, "");
+            var b = d.replace(re, "");
+
+            var cutN = "10000000000000";
+            var cutZero = "00000000000";
+
+            var dot = ".";
+
+            // 将小数输入为整数
+            var adot = a.indexOf(dot) > 0 ? a.length - a.indexOf(dot) : 0;
+            var bdot = b.indexOf(dot) > 0 ? b.length - b.indexOf(dot) : 0;
+
+            var cutA = adot > 0 ? parseInt(cutN.substr(0, adot)) : 1;
+            var cutB = bdot > 0 ? parseInt(cutN.substr(0, bdot)) : 1;
+
+            var maxcutAB = Math.max(cutA, cutB);
+            var mincutAB = Math.min(cutA, cutB);
+
+            var cutAB = maxcutAB / mincutAB;
+            var numA = 0;
+            var numB = 0;
+
+            var inzero = cutZero.substr(0, cutAB.toString().length - 1);
+            var cutLen = maxcutAB.toString().length - 1;
+
+            if (adot == bdot) {
+                numA = parseInt(a.replace(dot, ""), 10);
+                numB = parseInt(b.replace(dot, ""), 10);
+            } else if (adot > bdot) {
+                numA = parseInt(a.replace(dot, ""), 10);
+                numB = parseInt(b.replace(dot, "") + inzero, 10);
+            } else {
+                numB = parseInt(b.replace(dot, ""), 10);
+                numA = parseInt(a.replace(dot, "") + inzero, 10);
+            }
+
+            var numAB = "0.0";
+            var lastN = "0.0";
+
+            switch (n) {
+                case 0:
+                    // 加
+                    numAB = ((numA + numB) / maxcutAB).toString();
+                    break;
+                case 1:
+                    // 减
+                    numAB = ((numA - numB) / maxcutAB).toString();
+                    break;
+                case 2:
+                    // 乘
+                    numAB = Math.abs(numA * numB).toString();
+                    cutLen = cutLen * 2;
+                    break;
+                case 3:
+                    // 除
+                    numAB = (numA / numB).toString();
+                    break;
+            }
+            // 对乘法的特别处理
+            if (n == 2) {
+                if (numAB.length <= cutLen) {
+                    numAB = cutZero.substr(0, cutLen - numAB.length + 1) + numAB;
+                }
+                if (Math.abs(numA * numB) != numA * numB) {
+                    numAB = "-" + numAB;
+                }
+                numAB = numAB.slice(0, numAB.length - cutLen) + "." + numAB.slice(numAB.length - cutLen);
+            }
+            return parseFloat(numAB).toString();
+        }
+
+        // 测试1
+        // console.log(executeStr('1.331', '0.004', 0));
+        // console.log(executeStr('1.336', '0.001', 1));
+        // console.log(executeStr('13.35', '0.1', 2));
+        // console.log(executeStr('133.5', '100', 3));
+
+
+        // 2. 字符串或者数字之间进行四则运算，且可以保留小数位
+        /**
+         * @param x 运算数
+         * @param y 运算数
+         * @param op 操作符，0：加；1：减；2：乘；3：除
+         * @param acc 保留小数位个数，进行四舍五入
+         */
+        function execute(x, y, op, acc) {
+            // ???此处存在争议，如果用户输入的为undefined，是将其转换为0,还是将这个错误抛出来?
+            var xx = Number(x == undefined ? 0 : x);
+            var yy = Number(y == undefined ? 0 : y);
+
+            var a = science(xx);
+            var b = science(yy);
+
+            var na = a.num;
+            var nb = b.num;
+            var ta = a.times;
+            var tb = b.times;
+            var maxt = ta > tb ? ta : tb;
+
+            var result = 0;
+            switch (parseInt(op, 10)) {
+                case 0:
+                    // 加
+                    if (ta == tb) {
+                        result = na + nb;
+                    } else if (ta > tb) {
+                        result = na + nb * (ta / tb);
+                    } else {
+                        result = na * (tb / ta) + nb;
+                    }
+                    result = result / maxt;
+                    break;
+                case 1:
+                    // 减
+                    if (ta === tb) {
+                        result = na - nb;
+                    } else if (ta > tb) {
+                        result = na - nb * (ta / tb);
+                    } else {
+                        result = na * (tb / ta) - nb;
+                    }
+                    result = result / maxt;
+                    break;
+                case 2:
+                    // 乘
+                    result = na * nb / (ta * tb);
+                    break;
+                case 3:
+                    // 除
+                    var nab = na / nb;
+                    var tab = tb / ta;
+                    return execute(nab, tab, 2, acc);
+            }
+
+            if (acc != undefined && acc != null) {
+                // ???原生JS函数存在精度损失bug
+                // return Number(Number(result).toFixed(parseInt(acc)));
+                return Number(toFixed(Number(result),parseInt(acc)));
+            } else {
+                return Number(result);
+            }
+        }
+        /**
+         * 科学计数法
+         *
+         * @param num
+         * @returns
+         */
+        function science(num) {
+            var re = {
+                num: 0,
+                times: 1
+            };
+            if (isInteger(num)) {
+                re.num = num;
+                return re;
+            }
+            var snum = num + "";
+            var dotPos = snum.indexOf(".");
+            var len = snum.substr(dotPos + 1).length;
+            var times = Math.pow(10, len);
+            var intNum = parseInt(snum.replace(".", ""));
+            re.times = times;
+            re.num = intNum;
+            return re;
+        }
+        /**
+         * 判断是否为整数，字符整数也返回true
+         *
+         * @param num
+         * @returns
+         */
+        function isInteger(num) {
+            return Math.floor(num) === Number(num);
+        }
+        // // toFixed 修复 原生JS函数存在精度损失bug
+        // 该函数存在两个bug
+        // 1.num为负数时，四舍五入报错
+        // 2.num为整数时，不能补0
+        // function toFixed(num, s) {
+        //     var times = Math.pow(10, s)
+        //     // var des = num * times + 0.5;
+        //     var des = (num + '').replace('.','');
+        //     des = parseInt(des, 10) / times
+        //     return des + ''
+        // }
+        /*
+        * 稍有不同的是 js的toFixed在保留位数不够的情况下会自动补零
+        * 因此加了第三个参数，是否补零，默认是补零的--
+        */
+        function toFixed(num, s, f) {
+            var ff = typeof (f) == "undefined" ? true : f;
+            var times = Math.pow(10, s);
+            var des = num * times + (num >= 0 ? 0.5 : -0.5);
+            des = parseInt(des, 10) / times;
+            des += '';
+            if (ff) {
+                if (des.indexOf(".") == -1) {
+                    for (var i = 0; i < s; i++) {
+                        if (i == 0) des += ".";
+                        des += "0";
+                    }
+                } else {
+                    var dotPos = des.indexOf('.')
+                    var len = des.substr(dotPos + 1).length
+                    if (len < s) {
+                        for (var i = 0; i < s - len; i++) {
+                            des += "0";
+                        }
+                    }
+                }
+                return des;
+            } else {
+                return des;
+            }
+        }
+        // 测试2
+        console.log(execute('1.331', '0.004', 0,2));
+        console.log(execute('1.336', '0.001', 1,2));
+        console.log(execute('13.35', '0.1', 2,2));
+        console.log(execute('133.5', '100', 3,2));
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>移动端自适应文字</title>
+</head>
+
+<body>
+    <span>12345678901234567890123456789012</span>
+    <script>
+        var w = document.documentElement.clientWidth;
+        document.documentElement.style.fontSize = w / 32 + "px";
+
+        window.onresize = function () {
+            var w = document.documentElement.clientWidth;
+            document.documentElement.style.fontSize = w / 32 + "px";
+        }
+    </script>
+</body>
+
+</html>

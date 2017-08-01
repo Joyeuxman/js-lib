@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        * 稍有不同的是 js的toFixed在保留位数不够的情况下会自动补零
+        * 因此加了第三个参数，是佛补零，默认是补零的--
+        */
+        function toFixed(num, s, f) {
+            var ff = typeof (f) == "undefined" ? true : f;
+            var times = Math.pow(10, s);
+            var des = num * times + (num >= 0 ? 0.5 : -0.5);
+            des = parseInt(des, 10) / times;
+            des += '';
+            if (ff) {
+                if (des.indexOf(".") == -1) {
+                    for (var i = 0; i < s; i++) {
+                        if (i == 0) des += ".";
+                        des += "0";
+                    }
+                } else {
+                    var dotPos = des.indexOf('.')
+                    var len = des.substr(dotPos + 1).length
+                    if (len < s) {
+                        for (var i = 0; i < s - len; i++) {
+                            des += "0";
+                        }
+                    }
+                }
+                return des;
+            } else {
+                return des;
+            }
+        }
+        console.log(toFixed(-4.155,2));
+        console.log(toFixed(-4,2));
+        
+    </script>
+</body>
+
+</html>

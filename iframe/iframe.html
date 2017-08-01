@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        iframe {
+            width: 100%;
+            margin: 0 0 1em;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>自适应镶嵌页面内容宽高的iframe</h3>
+    <p>需要用Hbuilder打开才行，即需要起服务，不然存在异步问题</p>
+    <p>iframe标签默认是有宽高的，宽300px,高150px</p>
+    <iframe src="" frameborder="0"></iframe>
+    <iframe src="./chart.html" id="test1" scrolling="no"></iframe>
+    <iframe src="./chart.html" id="test2" scrolling="no"></iframe>
+
+    <script type="text/javascript">
+        var iframeids = ["test1", "test2"];
+        function dyniframesize() {
+            var dyniframe = new Array();
+            for (i = 0; i < iframeids.length; i++) {
+                if (document.getElementById) {
+                    //自动调整iframe高度
+                    dyniframe[dyniframe.length] = document.getElementById(iframeids[i]);
+                    if (dyniframe[i] && !window.opera) {
+                        dyniframe[i].style.display = "block";
+                        if (dyniframe[i].contentDocument && dyniframe[i].contentDocument.body.offsetHeight){ 
+                            dyniframe[i].height = dyniframe[i].contentDocument.body.offsetHeight;
+                        }
+                    }
+                }
+
+            }
+        }
+    </script>
+</body>
+
+</html>
