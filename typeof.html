@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 判断类型的方法
+    function typeofClass(obj){
+      return Object.prototype.toString.call(obj).slice(8,-1);
+    }
+    console.log('没有对比就没有伤害...');
+    console.log(typeof 'foo');
+    console.log(typeof new String('foo'));
+    console.log('暴击一万点...');
+    console.log(typeofClass(null));
+    console.log(typeofClass(undefined));
+    console.log(typeofClass(new String('foo')));
+    console.log(typeofClass([]));
+    console.log(typeofClass({}));
+    console.log(typeofClass(new Date()));
+    console.log(typeofClass(new Boolean()));
+    console.log(typeofClass(new Function()));
+    console.log(typeofClass(new Error()));
+    console.log(typeofClass(new RegExp()));
+    // typeof的唯一用处：判断一个变量是否已经定义
+    // false表示foo变量没有定义过，true表示该变量已经定义过
+    typeof foo !== 'undefined';
+  </script>
+</body>
+</html>

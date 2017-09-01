@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const str1 = '{"1":"a","2":"b","3":{"4":"d","5":{"6":"f"} } }';
+    const jsonStr1 = JSON.parse(str1,(k,v)=>{
+      console.log(k);
+      if( typeof v == 'object') return v;
+      if(k === '') return v;
+      return v + '测试';
+    })
+    console.log(jsonStr1);
+  </script>
+</body>
+</html>
