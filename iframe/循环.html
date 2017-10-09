@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>循环</title>
+</head>
+
+<body>
+  <script>
+    // for循环 
+    // 1.break跳出单层循环，continue跳出单层循环中的本次循环
+    // for (let i = 0; i < 9; i++) {
+    //   if (i == 4) continue;
+    //   console.log(i);//0 1 2 3 5 6 7 8 9
+    // }
+    // for (let i = 0; i < 9; i++) {
+    //   if (i == 4) break;
+    //   console.log(i);//0 1 2 3 
+    // }
+    // 2.break跳出多层循环
+    // inner: for (let i = 0; i < 9; i++) {
+    //   console.log(i);
+    //   outer: for (let j = 0; j < 9; j++) {
+    //     if (j == 5) break inner;
+    //     console.log(j);//0 0 1 2 3 4 5
+    //   }
+    // }
+
+
+    // // forEach循环 
+    // // 1.不支持break
+    // // 2.return会跳出本次循环，但是不会结束整个循环
+    // // 3.不使用第三个参数时，不会改变原数组
+    const arr = ['a', 'b', 'c', 'd'];
+    const changeArr2 = arr.forEach((item, index, arr) => {
+      // if(item == 'c') break;//break 报错
+      if (item == 'c') return;//return 跳出本次循环
+      return item += item;
+      console.log(item);//aa bb dd
+    })
+    console.log('原数组不变===', arr);//['a', 'b', 'c', 'd']
+    console.log('forEach之后的数组===', changeArr2);//始终为undefined
+    // // 4.改变原数组
+    // const changeArr = ['a', 'b', 'c', 'd'];
+    // changeArr.forEach((item, index, arr) => {
+    //   arr[index] += item;
+    //   console.log(item);
+    //   console.log(arr[index]);
+    // })
+    // console.log('改变原数组===', changeArr);
+
+
+    // map循环
+    // 1.不支持break
+    // 2.可以使用return跳出本次循环
+    // 3.不使用第三个参数时，不会改变原数组
+    // 4.map相当于将原数组copy一份，用return的值去覆盖copy的数组
+    // const arr1 = ['a', 'b', 'c', 'd'];
+    // const changeArr1 = arr1.map((item, index, arr) => {
+    //   // if(item == 'c') break;//break 报错
+    //   if (item == 'c') return;//return 跳出本次循环
+    //   return item += item;
+    //   console.log(item);//aa bb dd
+    // })
+    // console.log('原数组不变===', arr1);//['a', 'b', 'c', 'd']
+    // console.log('map之后数组===', changeArr1);//['aa', 'bb', undefined, 'dd']
+    // 5.改变原数组
+    // const changeArr = ['a', 'b', 'c', 'd'];
+    // changeArr.map((item, index, arr) => {
+    //   arr[index] += item;
+    //   console.log(item);
+    //   console.log(arr[index]);
+    // })
+    // console.log('改变原数组===', changeArr);
+  </script>
+</body>
+
+</html>

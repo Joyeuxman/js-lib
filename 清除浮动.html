@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>6种清除浮动</title>
+</head>
+
+<body>
+  <!-- 包裹性清除浮动 -->
+  <div style="display:inline-block;background:#f0f3f9; padding:20px;">
+    <img style="float:left;" src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" />
+  </div>
+  <div style="float:left; background:#f0f3f9; padding:20px;">
+    <img style="float:left;" src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" />
+  </div>
+  <div style="position:absolute; background:#f0f3f9; padding:20px;">
+    <img style="float:left;" src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" />
+  </div>
+  <div style="overflow:hidden; background:#f0f3f9; padding:20px;">
+    <img style="float:left;" src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" />
+  </div>
+  <!-- zoom为IE私有属性 -->
+  <div style="zoom:1; background:#f0f3f9; padding:20px;">
+    <img style="float:left;" data-src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" />
+  </div>
+  <!-- 添加新元素清除浮动 -->
+  <div style=" background:#f0f3f9; padding:20px;">
+    <img style="float:left;" data-src="http://image.zhangxinxu.com/image/study/s/s128/mm1.jpg" />
+    <div style="clear:both"></div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>冒泡与捕获</title>
+  <style>
+    #div {
+      width: 300px;
+      height: 300px;
+      border: 1px solid blue;
+    }
+
+    #p {
+      width: 200px;
+      height: 200px;
+      border: 1px solid red;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="div">
+    <p id="p"></p>
+  </div>
+  <script>
+    document.getElementById('div').addEventListener('click', function (e) {
+      console.log('div冒泡');
+    }, false);
+    document.getElementById('div').addEventListener('click', function (e) {
+      console.log('div捕获');
+    }, true);
+    document.getElementById('p').addEventListener('click', function (e) {
+      console.log('p冒泡');
+    }, false);
+    document.getElementById('p').addEventListener('click', function (e) {
+      console.log('p捕获');
+    }, true);
+    /*
+      冒泡(默认)false与捕获true
+      1.一种事件触发方式 
+      冒泡：子元素先触发冒泡，父元素次之。捕获：父元素先触发捕获，子元素次之
+      2.两种事件触发方式混合
+      点击子元素：父元素捕获-->子元素冒泡-->子元素捕获-->父元素冒泡<br>
+      点击父元素：父元素冒泡-->父元素捕获
+    */
+  </script>
+</body>
+
+</html>

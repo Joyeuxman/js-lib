@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>宽和高</title>
+  <style>
+    #div1 {
+      width: 100px;
+      height: 100px;
+      padding:10px;
+      border:1px solid black;
+      margin:10px;
+      background-color: brown;
+    }
+
+    /* #div2 {
+      width: 100px;
+      height: 100px;
+      padding: 10px;
+      background-color: brown;
+    } */
+
+    #div3 {
+      width: 100px;
+      height: 100px;
+      padding: 10px;
+      margin: 10px;
+      background-color: brown;
+    }
+
+    #div4 {
+      width: 100px;
+      height: 100px;
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid blue;
+      background-color: brown;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="div1">
+    <div style="height:70px;width:100px;padding:10px;border:1px solid honeydew;margin:10px;"></div>
+  </div>
+  <div id="div2" style="height:100px;width:100px;padding:10px;background-color: brown;"></div>
+  <div id="div3"></div>
+  <div id="div4"></div>
+  <script>
+    const test = (el) => {
+      const element = document.getElementById(el);
+      console.log('element.height===', element.style.height);
+      console.log('element.clientHeight===', element.clientHeight);
+      console.log('element.scrollHeight===', element.scrollHeight);
+      console.log('element.offsetHeight===', element.offsetHeight);
+    }
+    test('div1');
+    /* Goggle测试
+    1.height 不包含padding border margin
+    2.clientHeight = height + padding ;不包含border margin 滚动条的宽度(17px)
+    3.scrollHeight = Math.max( (父元素height + 父元素padding), (子元素height + 子元素padding + 子元素border + 子元素margin) )
+    4.offsetHeight = height + padding + border ; 不包含margin 滚动条高度
+
+    5.clientTop = border
+    6.scrollTop = 滚动后被隐藏的高度
+    7.offsetTop = 获取对象相对于由offsetParent属性指定的父坐标(css定位的元素或body元素)距离顶端的高度。
+    8.offsetParent = 该属性返回一个对象的引用，这个对象是距离调用offsetParent的元素最近的
+      (包含层次中最靠近的)，已进行过CSS定位的容器元素。 如果这个容器元素未进行CSS定位, 则offsetParent属性的取值为body元素的引用。 
+      当容器元素的style.display 被设置为 "none"时（译注：IE和Opera除外），offsetParent属性 返回 null。
+    */
+  </script>
+</body>
+
+</html>
